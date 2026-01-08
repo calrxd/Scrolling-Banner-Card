@@ -5,16 +5,16 @@ const y = [
   { entity_id: "demo.security", label: "Security", icon: "mdi:shield-outline" },
   { entity_id: "demo.network", label: "Network", icon: "mdi:wifi" }
 ];
-function x(l, t, r) {
-  return Math.max(t, Math.min(r, l));
+function x(c, t, r) {
+  return Math.max(t, Math.min(r, c));
 }
-function g(l, t = "") {
-  return typeof l == "string" ? l : t;
+function g(c, t = "") {
+  return typeof c == "string" ? c : t;
 }
-function m(l) {
-  return typeof l == "string" && l.trim().length > 0;
+function f(c) {
+  return typeof c == "string" && c.trim().length > 0;
 }
-class C extends HTMLElement {
+class T extends HTMLElement {
   constructor() {
     super(...arguments), this._needsMarquee = !1;
   }
@@ -201,8 +201,8 @@ class C extends HTMLElement {
     if (!this._root || !this._config) return;
     const r = this._root.querySelector(".viewport"), e = this._root.querySelector(".track"), i = t || (this._config.entities && this._config.entities.length > 0 ? this._config.entities : y);
     if (!e.firstElementChild) return;
-    const n = e.getAttribute("data-duplicated") === "true", s = n ? e.scrollWidth / 2 : e.scrollWidth, o = r.clientWidth, c = s > o + 8;
-    if (this._needsMarquee = c, !c) {
+    const n = e.getAttribute("data-duplicated") === "true", s = n ? e.scrollWidth / 2 : e.scrollWidth, o = r.clientWidth, l = s > o + 8;
+    if (this._needsMarquee = l, !l) {
       n && (e.innerHTML = this._renderItemsHtml(i, !1), e.setAttribute("data-duplicated", "false")), e.classList.remove("marquee"), e.classList.add("centered"), e.style.removeProperty("--sb-shift"), e.style.removeProperty("--sb-duration");
       return;
     }
@@ -213,18 +213,18 @@ class C extends HTMLElement {
   _renderItemsHtml(t, r) {
     const e = r ? [...t, ...t] : t, i = !!this._config.divider, n = [];
     for (let s = 0; s < e.length; s++) {
-      const o = e[s], c = this._getLabel(o), { valueText: a, unitText: d } = this._getValue(o), p = this._getIcon(o), v = m(o.bg_color) ? o.bg_color : "rgba(255,255,255,0.06)", f = m(o.text_color) ? o.text_color : "", b = m(o.icon_color) ? o.icon_color : "", q = o.entity_id.startsWith("demo.") ? "" : `data-entity="${o.entity_id}" tabindex="0" role="button"`;
+      const o = e[s], l = this._getLabel(o), { valueText: a, unitText: d } = this._getValue(o), p = this._getIcon(o), v = f(o.bg_color) ? o.bg_color : "rgba(255,255,255,0.06)", m = f(o.text_color) ? o.text_color : "", b = f(o.icon_color) ? o.icon_color : "", q = o.entity_id.startsWith("demo.") ? "" : `data-entity="${o.entity_id}" tabindex="0" role="button"`;
       n.push(`
         <div class="pill"
           style="
             --sb-pill-bg: ${v};
-            ${f ? `--sb-pill-text:${f};` : ""}
+            ${m ? `--sb-pill-text:${m};` : ""}
             ${b ? `--sb-pill-icon:${b};` : ""}
           "
           ${q}
         >
           <span class="icon"><ha-icon icon="${p}"></ha-icon></span>
-          <span class="label">${this._escape(c)}</span>
+          <span class="label">${this._escape(l)}</span>
           <span class="value">${this._escape(a)}${d ? `<span style="opacity:.75;font-weight:700;margin-left:2px">${this._escape(d)}</span>` : ""}</span>
         </div>
       `), i && s < e.length - 1 && n.push('<div class="divider" aria-hidden="true"></div>');
@@ -278,28 +278,28 @@ class C extends HTMLElement {
   }
 }
 const k = "scrolling-banner-card";
-customElements.get(k) || customElements.define(k, C);
-function h(l, t) {
-  return Array.isArray(l) ? l : t;
+customElements.get(k) || customElements.define(k, T);
+function h(c, t) {
+  return Array.isArray(c) ? c : t;
 }
-function w(l, t, r) {
-  return Math.max(t, Math.min(r, l));
+function w(c, t, r) {
+  return Math.max(t, Math.min(r, c));
 }
-function u(l, t = "") {
-  return typeof l == "string" ? l : t;
+function u(c, t = "") {
+  return typeof c == "string" ? c : t;
 }
-function $(l, t = !1) {
-  return typeof l == "boolean" ? l : t;
+function $(c, t = !1) {
+  return typeof c == "boolean" ? c : t;
 }
-function E(l, t = 0) {
-  return typeof l == "number" && !Number.isNaN(l) ? l : t;
+function E(c, t = 0) {
+  return typeof c == "number" && !Number.isNaN(c) ? c : t;
 }
-function _(l, t) {
-  if (!l) return t;
-  const r = l.trim();
+function _(c, t) {
+  if (!c) return t;
+  const r = c.trim();
   return /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(r) ? r : t;
 }
-class T extends HTMLElement {
+class C extends HTMLElement {
   setConfig(t) {
     this._config = {
       type: "custom:scrolling-banner-card",
@@ -490,7 +490,7 @@ class T extends HTMLElement {
         </div>
         <div class="entities">
           ${o.map(
-      (c, a) => `
+      (l, a) => `
             <div class="entity-card" data-idx="${a}">
               <div class="entity-head">
                 <div class="entity-title">Item ${a + 1}</div>
@@ -501,41 +501,41 @@ class T extends HTMLElement {
                 <div class="picker">
                   <div class="h">Entity</div>
                   <div data-picker="entity" data-idx="${a}"></div>
-                  <input id="entity_id_${a}" type="text" value="${u(c.entity_id, "")}" placeholder="sensor.temperature" style="margin-top:8px;" />
+                  <input id="entity_id_${a}" type="text" value="${u(l.entity_id, "")}" placeholder="sensor.temperature" style="margin-top:8px;" />
                 </div>
 
                 <div class="picker">
                   <div class="h">Icon</div>
                   <div data-picker="icon" data-idx="${a}"></div>
-                  <input id="icon_${a}" type="text" value="${u(c.icon, "")}" placeholder="mdi:information-outline" style="margin-top:8px;" />
+                  <input id="icon_${a}" type="text" value="${u(l.icon, "")}" placeholder="mdi:information-outline" style="margin-top:8px;" />
                 </div>
 
                 <div>
                   <div class="h">Label</div>
-                  <input id="label_${a}" type="text" value="${u(c.label, "")}" placeholder="Optional label override" />
+                  <input id="label_${a}" type="text" value="${u(l.label, "")}" placeholder="Optional label override" />
                 </div>
 
                 <div>
                   <div class="h">Pill background</div>
                   <div class="colorRow">
-                    <input id="bg_color_picker_${a}" type="color" value="${_(c.bg_color, "#202020")}" />
-                    <input id="bg_color_${a}" type="text" value="${u(c.bg_color, "")}" placeholder="e.g. rgba(255,255,255,0.06)" />
+                    <input id="bg_color_picker_${a}" type="color" value="${_(l.bg_color, "#202020")}" />
+                    <input id="bg_color_${a}" type="text" value="${u(l.bg_color, "")}" placeholder="e.g. rgba(255,255,255,0.06)" />
                   </div>
                 </div>
 
                 <div>
                   <div class="h">Icon color</div>
                   <div class="colorRow">
-                    <input id="icon_color_picker_${a}" type="color" value="${_(c.icon_color, "#ffffff")}" />
-                    <input id="icon_color_${a}" type="text" value="${u(c.icon_color, "")}" placeholder="e.g. #FFD966" />
+                    <input id="icon_color_picker_${a}" type="color" value="${_(l.icon_color, "#ffffff")}" />
+                    <input id="icon_color_${a}" type="text" value="${u(l.icon_color, "")}" placeholder="e.g. #FFD966" />
                   </div>
                 </div>
 
                 <div>
                   <div class="h">Text color</div>
                   <div class="colorRow">
-                    <input id="text_color_picker_${a}" type="color" value="${_(c.text_color, "#ffffff")}" />
-                    <input id="text_color_${a}" type="text" value="${u(c.text_color, "")}" placeholder="Overrides pill text only" />
+                    <input id="text_color_picker_${a}" type="color" value="${_(l.text_color, "#ffffff")}" />
+                    <input id="text_color_${a}" type="text" value="${u(l.text_color, "")}" placeholder="Overrides pill text only" />
                   </div>
                 </div>
               </div>
@@ -551,8 +551,8 @@ class T extends HTMLElement {
         <textarea id="css" rows="6" placeholder="e.g. .pill { border-radius: 16px; }">${u(s.css, "")}</textarea>
       </div>
     `, this._wire(), e) {
-      const c = this._root.querySelector(`#${CSS.escape(e)}`);
-      c && typeof c.focus == "function" && (c.focus(), i !== null && n !== null && typeof c.setSelectionRange == "function" && c.setSelectionRange(i, n));
+      const l = this._root.querySelector(`#${CSS.escape(e)}`);
+      l && typeof l.focus == "function" && (l.focus(), i !== null && n !== null && typeof l.setSelectionRange == "function" && l.setSelectionRange(i, n));
     }
     this._syncPickers();
   }
@@ -580,16 +580,16 @@ class T extends HTMLElement {
         n.splice(i, 1), this._update({ entities: n });
       });
     }), h(this._config.entities, []).forEach((e, i) => {
-      const n = (o, c) => {
+      const n = (o, l) => {
         const a = this._root.querySelector(o);
         a && a.addEventListener("input", () => {
           const d = h(this._config.entities, []).slice();
-          d[i] = { ...d[i], [c]: a.value }, this._update({ entities: d });
+          d[i] = { ...d[i], [l]: a.value }, this._update({ entities: d });
         });
       };
       n(`#entity_id_${i}`, "entity_id"), n(`#label_${i}`, "label"), n(`#icon_${i}`, "icon"), n(`#bg_color_${i}`, "bg_color"), n(`#icon_color_${i}`, "icon_color"), n(`#text_color_${i}`, "text_color");
-      const s = (o, c, a) => {
-        const d = this._root.querySelector(o), p = this._root.querySelector(c);
+      const s = (o, l, a) => {
+        const d = this._root.querySelector(o), p = this._root.querySelector(l);
         !d || !p || d.addEventListener("input", () => {
           p.value = d.value;
           const v = h(this._config.entities, []).slice();
@@ -606,8 +606,8 @@ class T extends HTMLElement {
       const n = this._root.querySelector(`[data-picker="entity"][data-idx="${i}"]`);
       if (n && n.childElementCount === 0 && customElements.get("ha-entity-picker")) {
         const o = document.createElement("ha-entity-picker");
-        o.className = "picker", r && (o.hass = r), o.value = e.entity_id || "", o.setAttribute("allow-custom-entity", ""), o.addEventListener("value-changed", (c) => {
-          const a = c?.detail?.value ?? "", d = this._root.querySelector(`#entity_id_${i}`);
+        o.className = "picker", r && (o.hass = r), o.value = e.entity_id || "", o.setAttribute("allow-custom-entity", ""), o.addEventListener("value-changed", (l) => {
+          const a = l?.detail?.value ?? "", d = this._root.querySelector(`#entity_id_${i}`);
           d.value = a;
           const p = h(this._config.entities, []).slice();
           p[i] = { ...p[i], entity_id: a }, this._update({ entities: p });
@@ -619,8 +619,8 @@ class T extends HTMLElement {
       const s = this._root.querySelector(`[data-picker="icon"][data-idx="${i}"]`);
       if (s && s.childElementCount === 0 && customElements.get("ha-icon-picker")) {
         const o = document.createElement("ha-icon-picker");
-        o.className = "picker", r && (o.hass = r), o.value = e.icon || "", o.addEventListener("value-changed", (c) => {
-          const a = c?.detail?.value ?? "", d = this._root.querySelector(`#icon_${i}`);
+        o.className = "picker", r && (o.hass = r), o.value = e.icon || "", o.addEventListener("value-changed", (l) => {
+          const a = l?.detail?.value ?? "", d = this._root.querySelector(`#icon_${i}`);
           d.value = a;
           const p = h(this._config.entities, []).slice();
           p[i] = { ...p[i], icon: a }, this._update({ entities: p });
@@ -642,11 +642,10 @@ class T extends HTMLElement {
   }
 }
 const S = "scrolling-banner-card-editor";
-customElements.get(S) || customElements.define(S, T);
-window.customCards = window.customCards || [];
-window.customCards.some((l) => l.type === "custom:scrolling-banner-card") || window.customCards.push({
+customElements.get(S) || customElements.define(S, C);
+window.customCards.push({
   type: "custom:scrolling-banner-card",
   name: "Scrolling Banner Card",
   description: "A responsive scrolling banner showing entity states.",
-  preview: !0
+  preview: !1
 });
