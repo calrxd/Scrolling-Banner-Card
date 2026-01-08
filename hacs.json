@@ -1,7 +1,8 @@
 {
   "name": "Scrolling Banner Card",
-  "render_readme": true,
-  "homeassistant": "2023.8.0",
   "content_in_root": false,
+  "render_readme": true,
+  "domains": ["lovelace"],
+  "iot_class": "local",
   "filename": "scrolling-banner-card.js"
 }
