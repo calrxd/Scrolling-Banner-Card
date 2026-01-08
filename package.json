@@ -1,0 +1,15 @@
+{
+  "name": "scrolling-banner-card",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A fixed top scrolling status banner for Home Assistant",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite",
+    "check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "vite": "^7.3.1"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "name": "Scrolling Banner Card",
+  "render_readme": true,
+  "homeassistant": "2023.8.0",
+  "content_in_root": false,
+  "filename": "scrolling-banner-card.js"
+}
