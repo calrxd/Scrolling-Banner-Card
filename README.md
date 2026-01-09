@@ -20,6 +20,12 @@ The Scrolling Banner Card displays key entity states in a single horizontal row,
 - Optional dividers between items
 - Demo placeholders when no entities are configured
 
+--
+
+## Screenshot
+
+![Scrolling Banner Card](images/screenshot.png)
+
 ---
 
 ## 📦 Installation
