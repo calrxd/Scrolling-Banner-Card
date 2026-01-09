@@ -55,27 +55,39 @@ function colorToHexOrDefault(v: string | undefined, fallbackHex: string) {
   return fallbackHex;
 }
 
+function safeCssEscape(id: string) {
+  try {
+    const esc = (window as any).CSS?.escape;
+    return typeof esc === "function" ? esc(id) : id;
+  } catch {
+    return id;
+  }
+}
+
 class ScrollingBannerCardEditor extends HTMLElement {
   private _config?: ScrollingBannerConfig;
   private _hass?: Hass;
   private _root?: ShadowRoot;
 
-  setConfig(config: ScrollingBannerConfig) {
+  setConfig(config: Partial<ScrollingBannerConfig>) {
+    // HA can call setConfig with empty/partial config during picker flows.
+    const cfg = (config ?? {}) as Partial<ScrollingBannerConfig>;
+
     this._config = {
       type: "custom:scrolling-banner-card",
-      title: asStr(config.title, ""),
+      title: asStr(cfg.title, ""),
 
-      entities: ensureArray<BannerEntity>(config.entities, []),
+      entities: ensureArray<BannerEntity>(cfg.entities, []),
 
-      speed: clamp(asNum(config.speed, 40), 10, 300),
-      pause_on_hover: asBool(config.pause_on_hover, true),
-      divider: asBool(config.divider, true),
+      speed: clamp(asNum(cfg.speed, 40), 10, 300),
+      pause_on_hover: asBool(cfg.pause_on_hover, true),
+      divider: asBool(cfg.divider, true),
 
-      background: asStr(config.background, "transparent"),
-      text_color: asStr(config.text_color, "rgba(255,255,255,0.92)"),
-      divider_color: asStr(config.divider_color, "rgba(255,255,255,0.14)"),
+      background: asStr(cfg.background, "transparent"),
+      text_color: asStr(cfg.text_color, "rgba(255,255,255,0.92)"),
+      divider_color: asStr(cfg.divider_color, "rgba(255,255,255,0.14)"),
 
-      css: asStr(config.css, ""),
+      css: asStr(cfg.css, ""),
     };
 
     this._ensureRoot();
@@ -208,7 +220,7 @@ class ScrollingBannerCardEditor extends HTMLElement {
     if (!this._root) return;
     const wrap = this._root.querySelector(".wrap") as HTMLDivElement;
 
-    // ✅ Preserve focus + selection to fix the “1 letter then blur” issue
+    // Preserve focus + selection
     const active = this._root.activeElement as any;
     const activeId = active?.id || "";
     const selStart = typeof active?.selectionStart === "number" ? active.selectionStart : null;
@@ -342,9 +354,10 @@ class ScrollingBannerCardEditor extends HTMLElement {
 
     this._wire();
 
-    // ✅ Restore focus/selection (prevents “type 1 letter then field unselects”)
+    // Restore focus/selection safely (CSS.escape can be missing in some webviews)
     if (activeId) {
-      const el = this._root.querySelector(`#${CSS.escape(activeId)}`) as any;
+      const safeId = safeCssEscape(activeId);
+      const el = this._root.querySelector(`#${safeId}`) as any;
       if (el && typeof el.focus === "function") {
         el.focus();
         if (selStart !== null && selEnd !== null && typeof el.setSelectionRange === "function") {
@@ -353,7 +366,6 @@ class ScrollingBannerCardEditor extends HTMLElement {
       }
     }
 
-    // Add HA pickers (entity/icon) if HA provides them
     this._syncPickers();
   }
 
@@ -371,7 +383,6 @@ class ScrollingBannerCardEditor extends HTMLElement {
     on("#pause_on_hover", "change", (e) => this._update({ pause_on_hover: (e.target as HTMLInputElement).checked }));
     on("#divider", "change", (e) => this._update({ divider: (e.target as HTMLInputElement).checked }));
 
-    // global colors (picker writes hex into text field too)
     on("#background_picker", "input", (e) => {
       const v = (e.target as HTMLInputElement).value;
       (this._root!.querySelector("#background") as HTMLInputElement).value = v;
@@ -401,7 +412,6 @@ class ScrollingBannerCardEditor extends HTMLElement {
       this._update({ entities });
     });
 
-    // remove buttons (delegation)
     this._root!.querySelectorAll("[data-action='remove']").forEach((btn) => {
       btn.addEventListener("click", () => {
         const idx = Number((btn as HTMLElement).getAttribute("data-idx"));
@@ -411,7 +421,6 @@ class ScrollingBannerCardEditor extends HTMLElement {
       });
     });
 
-    // entity row text inputs
     const entities = ensureArray<BannerEntity>(this._config.entities, []);
     entities.forEach((_, i) => {
       const bind = (id: string, key: keyof BannerEntity) => {
@@ -431,7 +440,6 @@ class ScrollingBannerCardEditor extends HTMLElement {
       bind(`#icon_color_${i}`, "icon_color");
       bind(`#text_color_${i}`, "text_color");
 
-      // per-entity color pickers
       const bindPicker = (pid: string, tid: string, key: keyof BannerEntity) => {
         const p = this._root!.querySelector(pid) as HTMLInputElement | null;
         const t = this._root!.querySelector(tid) as HTMLInputElement | null;
@@ -456,9 +464,7 @@ class ScrollingBannerCardEditor extends HTMLElement {
     const entities = ensureArray<BannerEntity>(this._config.entities, []);
     const hass = this._hass;
 
-    // If HA pickers exist, mount them into the placeholder divs.
     entities.forEach((e, i) => {
-      // ENTITY PICKER
       const entityHost = this._root!.querySelector(`[data-picker="entity"][data-idx="${i}"]`) as HTMLElement | null;
       if (entityHost && entityHost.childElementCount === 0 && customElements.get("ha-entity-picker")) {
         const picker = document.createElement("ha-entity-picker") as any;
@@ -481,7 +487,6 @@ class ScrollingBannerCardEditor extends HTMLElement {
         picker.value = e.entity_id || "";
       }
 
-      // ICON PICKER
       const iconHost = this._root!.querySelector(`[data-picker="icon"][data-idx="${i}"]`) as HTMLElement | null;
       if (iconHost && iconHost.childElementCount === 0 && customElements.get("ha-icon-picker")) {
         const picker = document.createElement("ha-icon-picker") as any;
@@ -517,7 +522,6 @@ class ScrollingBannerCardEditor extends HTMLElement {
       })
     );
 
-    // Re-render (now safe because we preserve focus)
     this._render();
   }
 }
