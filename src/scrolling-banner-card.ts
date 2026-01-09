@@ -118,10 +118,10 @@ static getStubConfig(): ScrollingBannerConfig {
     speed: 40,
     pause_on_hover: true,
     divider: true,
-    // No entities provided on purpose:
-    // the card will fall back to DEMO_ITEMS for the preview.
+    // No entities -> card falls back to DEMO_ITEMS
   };
 }
+
 
 
   connectedCallback() {

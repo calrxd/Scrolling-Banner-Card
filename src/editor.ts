@@ -100,10 +100,37 @@ class ScrollingBannerCardEditor extends HTMLElement {
     this._syncPickers();
   }
 
-  connectedCallback() {
-    this._ensureRoot();
-    this._render();
+ connectedCallback() {
+  this._ensureRoot();
+
+  // If HA mounts editor before setConfig, create a safe default config
+  if (!this._config) {
+    this._config = {
+      type: "custom:scrolling-banner-card",
+      title: "",
+      entities: [],
+      speed: 40,
+      pause_on_hover: true,
+      divider: true,
+      background: "transparent",
+      text_color: "rgba(255,255,255,0.92)",
+      divider_color: "rgba(255,255,255,0.14)",
+      css: "",
+    };
+
+    // Notify HA so the editor isn't stuck with "undefined config"
+    this.dispatchEvent(
+      new CustomEvent("config-changed", {
+        detail: { config: this._config },
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
+
+  this._render();
+}
+
 
   private _ensureRoot() {
     if (this._root) return;

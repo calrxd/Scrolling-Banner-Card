@@ -14,7 +14,7 @@ function g(c, t = "") {
 function f(c) {
   return typeof c == "string" && c.trim().length > 0;
 }
-class C extends HTMLElement {
+class T extends HTMLElement {
   constructor() {
     super(...arguments), this._needsMarquee = !1;
   }
@@ -46,8 +46,7 @@ class C extends HTMLElement {
       speed: 40,
       pause_on_hover: !0,
       divider: !0
-      // No entities provided on purpose:
-      // the card will fall back to DEMO_ITEMS for the preview.
+      // No entities -> card falls back to DEMO_ITEMS
     };
   }
   connectedCallback() {
@@ -277,7 +276,7 @@ class C extends HTMLElement {
   }
 }
 const k = "scrolling-banner-card";
-customElements.get(k) || customElements.define(k, C);
+customElements.get(k) || customElements.define(k, T);
 function h(c, t) {
   return Array.isArray(c) ? c : t;
 }
@@ -298,7 +297,7 @@ function _(c, t) {
   const e = c.trim();
   return /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(e) ? e : t;
 }
-function T(c) {
+function A(c) {
   try {
     const t = window.CSS?.escape;
     return typeof t == "function" ? t(c) : c;
@@ -306,7 +305,7 @@ function T(c) {
     return c;
   }
 }
-class A extends HTMLElement {
+class L extends HTMLElement {
   setConfig(t) {
     const e = t ?? {};
     this._config = {
@@ -326,7 +325,24 @@ class A extends HTMLElement {
     this._hass = t, this._syncPickers();
   }
   connectedCallback() {
-    this._ensureRoot(), this._render();
+    this._ensureRoot(), this._config || (this._config = {
+      type: "custom:scrolling-banner-card",
+      title: "",
+      entities: [],
+      speed: 40,
+      pause_on_hover: !0,
+      divider: !0,
+      background: "transparent",
+      text_color: "rgba(255,255,255,0.92)",
+      divider_color: "rgba(255,255,255,0.14)",
+      css: ""
+    }, this.dispatchEvent(
+      new CustomEvent("config-changed", {
+        detail: { config: this._config },
+        bubbles: !0,
+        composed: !0
+      })
+    )), this._render();
   }
   _ensureRoot() {
     this._root || (this._root = this.attachShadow({ mode: "open" }), this._root.innerHTML = `
@@ -559,7 +575,7 @@ class A extends HTMLElement {
         <textarea id="css" rows="6" placeholder="e.g. .pill { border-radius: 16px; }">${u(s.css, "")}</textarea>
       </div>
     `, this._wire(), i) {
-      const l = T(i), n = this._root.querySelector(`#${l}`);
+      const l = A(i), n = this._root.querySelector(`#${l}`);
       n && typeof n.focus == "function" && (n.focus(), r !== null && a !== null && typeof n.setSelectionRange == "function" && n.setSelectionRange(r, a));
     }
     this._syncPickers();
@@ -650,7 +666,9 @@ class A extends HTMLElement {
   }
 }
 const S = "scrolling-banner-card-editor";
-customElements.get(S) || customElements.define(S, A);
+customElements.get(S) || customElements.define(S, L);
+const C = window;
+C.__SBC_LOADED__ || (C.__SBC_LOADED__ = !0, console.info("Scrolling Banner Card v0.1.0 loaded"));
 window.customCards.push({
   type: "custom:scrolling-banner-card",
   name: "Scrolling Banner Card",
