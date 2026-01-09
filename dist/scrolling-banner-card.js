@@ -5,8 +5,8 @@ const y = [
   { entity_id: "demo.security", label: "Security", icon: "mdi:shield-outline" },
   { entity_id: "demo.network", label: "Network", icon: "mdi:wifi" }
 ];
-function x(c, t, i) {
-  return Math.max(t, Math.min(i, c));
+function x(c, t, e) {
+  return Math.max(t, Math.min(e, c));
 }
 function g(c, t = "") {
   return typeof c == "string" ? c : t;
@@ -19,18 +19,18 @@ class C extends HTMLElement {
     super(...arguments), this._needsMarquee = !1;
   }
   setConfig(t) {
-    const i = t ?? {};
-    this._config = {
+    const e = t ?? {};
+    typeof e.type == "string" && e.type.trim(), this._config = {
       type: "custom:scrolling-banner-card",
-      title: i.title,
-      entities: Array.isArray(i.entities) ? i.entities : void 0,
-      speed: typeof i.speed == "number" ? x(i.speed, 10, 300) : 40,
-      pause_on_hover: typeof i.pause_on_hover == "boolean" ? i.pause_on_hover : !0,
-      divider: typeof i.divider == "boolean" ? i.divider : !0,
-      background: g(i.background, "transparent"),
-      text_color: g(i.text_color, "rgba(255,255,255,0.92)"),
-      divider_color: g(i.divider_color, "rgba(255,255,255,0.14)"),
-      css: g(i.css, "")
+      title: typeof e.title == "string" ? e.title : void 0,
+      entities: Array.isArray(e.entities) ? e.entities : void 0,
+      speed: typeof e.speed == "number" ? x(e.speed, 10, 300) : 40,
+      pause_on_hover: typeof e.pause_on_hover == "boolean" ? e.pause_on_hover : !0,
+      divider: typeof e.divider == "boolean" ? e.divider : !0,
+      background: g(e.background, "transparent"),
+      text_color: g(e.text_color, "rgba(255,255,255,0.92)"),
+      divider_color: g(e.divider_color, "rgba(255,255,255,0.14)"),
+      css: g(e.css, "")
     }, this._ensureRoot(), this._render();
   }
   set hass(t) {
@@ -61,8 +61,8 @@ class C extends HTMLElement {
     this._root = this.attachShadow({ mode: "open" });
     const t = document.createElement("style");
     t.textContent = this._baseCss(), this._root.appendChild(t);
-    const i = document.createElement("div");
-    i.className = "card", i.innerHTML = `
+    const e = document.createElement("div");
+    e.className = "card", e.innerHTML = `
       <div class="header" part="header">
         <div class="title" part="title"></div>
       </div>
@@ -72,9 +72,9 @@ class C extends HTMLElement {
       </div>
 
       <style class="user-css"></style>
-    `, this._root.appendChild(i);
-    const e = this._root.querySelector(".viewport");
-    this._resizeObs = new ResizeObserver(() => this._recalcMarquee()), this._resizeObs.observe(e);
+    `, this._root.appendChild(e);
+    const i = this._root.querySelector(".viewport");
+    this._resizeObs = new ResizeObserver(() => this._recalcMarquee()), this._resizeObs.observe(i);
   }
   _baseCss() {
     return `
@@ -191,28 +191,28 @@ class C extends HTMLElement {
   }
   _render(t = !0) {
     if (!this._root || !this._config) return;
-    const i = this._root.querySelector(".card"), e = this._root.querySelector(".title"), r = this._root.querySelector(".header"), a = this._root.querySelector(".track"), s = this._root.querySelector(".user-css");
-    this._config.pause_on_hover ? this.classList.add("pause-on-hover") : this.classList.remove("pause-on-hover"), this._config.title && this._config.title.trim().length > 0 ? (r.style.display = "flex", e.textContent = this._config.title) : (r.style.display = "none", e.textContent = ""), i.style.setProperty("--sb-bg", this._config.background || "transparent"), i.style.setProperty("--sb-text", this._config.text_color || "rgba(255,255,255,0.92)"), i.style.setProperty("--sb-divider", this._config.divider_color || "rgba(255,255,255,0.14)"), s.textContent = this._config.css ? this._config.css : "";
+    const e = this._root.querySelector(".card"), i = this._root.querySelector(".title"), r = this._root.querySelector(".header"), a = this._root.querySelector(".track"), s = this._root.querySelector(".user-css");
+    this._config.pause_on_hover ? this.classList.add("pause-on-hover") : this.classList.remove("pause-on-hover"), this._config.title && this._config.title.trim().length > 0 ? (r.style.display = "flex", i.textContent = this._config.title) : (r.style.display = "none", i.textContent = ""), e.style.setProperty("--sb-bg", this._config.background || "transparent"), e.style.setProperty("--sb-text", this._config.text_color || "rgba(255,255,255,0.92)"), e.style.setProperty("--sb-divider", this._config.divider_color || "rgba(255,255,255,0.14)"), s.textContent = this._config.css ? this._config.css : "";
     const o = this._config.entities && this._config.entities.length > 0 ? this._config.entities : y;
     t ? (a.innerHTML = this._renderItemsHtml(o, !1), requestAnimationFrame(() => this._recalcMarquee(o))) : (a.innerHTML = this._renderItemsHtml(o, this._needsMarquee), requestAnimationFrame(() => this._recalcMarquee(o)));
   }
   _recalcMarquee(t) {
     if (!this._root || !this._config) return;
-    const i = this._root.querySelector(".viewport"), e = this._root.querySelector(".track"), r = t || (this._config.entities && this._config.entities.length > 0 ? this._config.entities : y);
-    if (!e.firstElementChild) return;
-    const a = e.getAttribute("data-duplicated") === "true", s = a ? e.scrollWidth / 2 : e.scrollWidth, o = i.clientWidth, l = s > o + 8;
+    const e = this._root.querySelector(".viewport"), i = this._root.querySelector(".track"), r = t || (this._config.entities && this._config.entities.length > 0 ? this._config.entities : y);
+    if (!i.firstElementChild) return;
+    const a = i.getAttribute("data-duplicated") === "true", s = a ? i.scrollWidth / 2 : i.scrollWidth, o = e.clientWidth, l = s > o + 8;
     if (this._needsMarquee = l, !l) {
-      a && (e.innerHTML = this._renderItemsHtml(r, !1), e.setAttribute("data-duplicated", "false")), e.classList.remove("marquee"), e.classList.add("centered"), e.style.removeProperty("--sb-shift"), e.style.removeProperty("--sb-duration");
+      a && (i.innerHTML = this._renderItemsHtml(r, !1), i.setAttribute("data-duplicated", "false")), i.classList.remove("marquee"), i.classList.add("centered"), i.style.removeProperty("--sb-shift"), i.style.removeProperty("--sb-duration");
       return;
     }
-    a || (e.innerHTML = this._renderItemsHtml(r, !0), e.setAttribute("data-duplicated", "true"));
-    const n = e.scrollWidth / 2, d = typeof this._config.speed == "number" ? x(this._config.speed, 10, 300) : 40, p = Math.max(6, n / d);
-    e.classList.add("marquee"), e.classList.remove("centered"), e.style.setProperty("--sb-shift", `${n}px`), e.style.setProperty("--sb-duration", `${p}s`);
+    a || (i.innerHTML = this._renderItemsHtml(r, !0), i.setAttribute("data-duplicated", "true"));
+    const n = i.scrollWidth / 2, d = typeof this._config.speed == "number" ? x(this._config.speed, 10, 300) : 40, p = Math.max(6, n / d);
+    i.classList.add("marquee"), i.classList.remove("centered"), i.style.setProperty("--sb-shift", `${n}px`), i.style.setProperty("--sb-duration", `${p}s`);
   }
-  _renderItemsHtml(t, i) {
-    const e = i ? [...t, ...t] : t, r = !!this._config.divider, a = [];
-    for (let s = 0; s < e.length; s++) {
-      const o = e[s], l = this._getLabel(o), { valueText: n, unitText: d } = this._getValue(o), p = this._getIcon(o), v = f(o.bg_color) ? o.bg_color : "rgba(255,255,255,0.06)", b = f(o.text_color) ? o.text_color : "", m = f(o.icon_color) ? o.icon_color : "", q = o.entity_id.startsWith("demo.") ? "" : `data-entity="${o.entity_id}" tabindex="0" role="button"`;
+  _renderItemsHtml(t, e) {
+    const i = e ? [...t, ...t] : t, r = !!this._config.divider, a = [];
+    for (let s = 0; s < i.length; s++) {
+      const o = i[s], l = this._getLabel(o), { valueText: n, unitText: d } = this._getValue(o), p = this._getIcon(o), v = f(o.bg_color) ? o.bg_color : "rgba(255,255,255,0.06)", b = f(o.text_color) ? o.text_color : "", m = f(o.icon_color) ? o.icon_color : "", q = o.entity_id.startsWith("demo.") ? "" : `data-entity="${o.entity_id}" tabindex="0" role="button"`;
       a.push(`
         <div class="pill"
           style="
@@ -226,20 +226,20 @@ class C extends HTMLElement {
           <span class="label">${this._escape(l)}</span>
           <span class="value">${this._escape(n)}${d ? `<span style="opacity:.75;font-weight:700;margin-left:2px">${this._escape(d)}</span>` : ""}</span>
         </div>
-      `), r && s < e.length - 1 && a.push('<div class="divider" aria-hidden="true"></div>');
+      `), r && s < i.length - 1 && a.push('<div class="divider" aria-hidden="true"></div>');
     }
     return requestAnimationFrame(() => this._wireInteractions()), a.join("");
   }
   _wireInteractions() {
     if (!this._root) return;
     const t = this._root.querySelector(".track");
-    t.__wired || (t.__wired = !0, t.addEventListener("click", (i) => {
-      const r = i.target.closest(".pill")?.getAttribute("data-entity");
+    t.__wired || (t.__wired = !0, t.addEventListener("click", (e) => {
+      const r = e.target.closest(".pill")?.getAttribute("data-entity");
       r && this._openMoreInfo(r);
-    }), t.addEventListener("keydown", (i) => {
-      if (i.key !== "Enter" && i.key !== " ") return;
-      const r = i.target.closest(".pill")?.getAttribute("data-entity");
-      r && (i.preventDefault(), this._openMoreInfo(r));
+    }), t.addEventListener("keydown", (e) => {
+      if (e.key !== "Enter" && e.key !== " ") return;
+      const r = e.target.closest(".pill")?.getAttribute("data-entity");
+      r && (e.preventDefault(), this._openMoreInfo(r));
     }));
   }
   _openMoreInfo(t) {
@@ -257,19 +257,19 @@ class C extends HTMLElement {
   _getIcon(t) {
     if (t.icon && t.icon.trim().length) return t.icon.trim();
     if (!this._hass || t.entity_id.startsWith("demo.")) return "mdi:information-outline";
-    const e = this._hass.states[t.entity_id]?.attributes?.icon;
-    return typeof e == "string" && e ? e : "mdi:information-outline";
+    const i = this._hass.states[t.entity_id]?.attributes?.icon;
+    return typeof i == "string" && i ? i : "mdi:information-outline";
   }
   _getValue(t) {
     if (t.entity_id.startsWith("demo."))
       return t.entity_id.includes("temperature") ? { valueText: "18.3", unitText: "°C" } : t.entity_id.includes("lights") ? { valueText: "3", unitText: "" } : t.entity_id.includes("security") ? { valueText: "Armed", unitText: "" } : t.entity_id.includes("network") ? { valueText: "Online", unitText: "" } : { valueText: "—", unitText: "" };
     if (!this._hass) return { valueText: "—", unitText: "" };
-    const i = this._hass.states[t.entity_id];
-    if (!i || ["unknown", "unavailable", "none"].includes(i.state)) return { valueText: "—", unitText: "" };
-    const e = i.attributes?.unit_of_measurement, r = i.attributes?.device_class, a = Number(i.state);
-    return isNaN(a) ? { valueText: `${i.state}`, unitText: typeof e == "string" ? e : "" } : {
+    const e = this._hass.states[t.entity_id];
+    if (!e || ["unknown", "unavailable", "none"].includes(e.state)) return { valueText: "—", unitText: "" };
+    const i = e.attributes?.unit_of_measurement, r = e.attributes?.device_class, a = Number(e.state);
+    return isNaN(a) ? { valueText: `${e.state}`, unitText: typeof i == "string" ? i : "" } : {
       valueText: `${Math.round(a * 10) / 10}`,
-      unitText: typeof e == "string" ? e : r === "temperature" ? "°C" : ""
+      unitText: typeof i == "string" ? i : r === "temperature" ? "°C" : ""
     };
   }
   _escape(t) {
@@ -281,8 +281,8 @@ customElements.get(k) || customElements.define(k, C);
 function h(c, t) {
   return Array.isArray(c) ? c : t;
 }
-function w(c, t, i) {
-  return Math.max(t, Math.min(i, c));
+function w(c, t, e) {
+  return Math.max(t, Math.min(e, c));
 }
 function u(c, t = "") {
   return typeof c == "string" ? c : t;
@@ -295,8 +295,8 @@ function E(c, t = 0) {
 }
 function _(c, t) {
   if (!c) return t;
-  const i = c.trim();
-  return /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(i) ? i : t;
+  const e = c.trim();
+  return /^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(e) ? e : t;
 }
 function T(c) {
   try {
@@ -308,18 +308,18 @@ function T(c) {
 }
 class M extends HTMLElement {
   setConfig(t) {
-    const i = t ?? {};
+    const e = t ?? {};
     this._config = {
       type: "custom:scrolling-banner-card",
-      title: u(i.title, ""),
-      entities: h(i.entities, []),
-      speed: w(E(i.speed, 40), 10, 300),
-      pause_on_hover: $(i.pause_on_hover, !0),
-      divider: $(i.divider, !0),
-      background: u(i.background, "transparent"),
-      text_color: u(i.text_color, "rgba(255,255,255,0.92)"),
-      divider_color: u(i.divider_color, "rgba(255,255,255,0.14)"),
-      css: u(i.css, "")
+      title: u(e.title, ""),
+      entities: h(e.entities, []),
+      speed: w(E(e.speed, 40), 10, 300),
+      pause_on_hover: $(e.pause_on_hover, !0),
+      divider: $(e.divider, !0),
+      background: u(e.background, "transparent"),
+      text_color: u(e.text_color, "rgba(255,255,255,0.92)"),
+      divider_color: u(e.divider_color, "rgba(255,255,255,0.14)"),
+      css: u(e.css, "")
     }, this._ensureRoot(), this._render();
   }
   set hass(t) {
@@ -438,7 +438,7 @@ class M extends HTMLElement {
   }
   _render() {
     if (!this._root) return;
-    const t = this._root.querySelector(".wrap"), i = this._root.activeElement, e = i?.id || "", r = typeof i?.selectionStart == "number" ? i.selectionStart : null, a = typeof i?.selectionEnd == "number" ? i.selectionEnd : null, s = this._config;
+    const t = this._root.querySelector(".wrap"), e = this._root.activeElement, i = e?.id || "", r = typeof e?.selectionStart == "number" ? e.selectionStart : null, a = typeof e?.selectionEnd == "number" ? e.selectionEnd : null, s = this._config;
     if (!s) {
       t.innerHTML = '<div class="small">No config yet. Add the card, then open the editor.</div>';
       return;
@@ -558,36 +558,36 @@ class M extends HTMLElement {
         <div class="small" style="margin-bottom:8px;">Custom CSS injected into the card shadow root.</div>
         <textarea id="css" rows="6" placeholder="e.g. .pill { border-radius: 16px; }">${u(s.css, "")}</textarea>
       </div>
-    `, this._wire(), e) {
-      const l = T(e), n = this._root.querySelector(`#${l}`);
+    `, this._wire(), i) {
+      const l = T(i), n = this._root.querySelector(`#${l}`);
       n && typeof n.focus == "function" && (n.focus(), r !== null && a !== null && typeof n.setSelectionRange == "function" && n.setSelectionRange(r, a));
     }
     this._syncPickers();
   }
   _wire() {
     if (!this._root || !this._config) return;
-    const t = (e, r, a) => {
-      const s = this._root.querySelector(e);
+    const t = (i, r, a) => {
+      const s = this._root.querySelector(i);
       s && s.addEventListener(r, a);
     };
-    t("#title", "input", (e) => this._update({ title: e.target.value })), t("#speed", "input", (e) => this._update({ speed: w(Number(e.target.value), 10, 300) })), t("#pause_on_hover", "change", (e) => this._update({ pause_on_hover: e.target.checked })), t("#divider", "change", (e) => this._update({ divider: e.target.checked })), t("#background_picker", "input", (e) => {
-      const r = e.target.value;
+    t("#title", "input", (i) => this._update({ title: i.target.value })), t("#speed", "input", (i) => this._update({ speed: w(Number(i.target.value), 10, 300) })), t("#pause_on_hover", "change", (i) => this._update({ pause_on_hover: i.target.checked })), t("#divider", "change", (i) => this._update({ divider: i.target.checked })), t("#background_picker", "input", (i) => {
+      const r = i.target.value;
       this._root.querySelector("#background").value = r, this._update({ background: r });
-    }), t("#background", "input", (e) => this._update({ background: e.target.value })), t("#text_color_picker", "input", (e) => {
-      const r = e.target.value;
+    }), t("#background", "input", (i) => this._update({ background: i.target.value })), t("#text_color_picker", "input", (i) => {
+      const r = i.target.value;
       this._root.querySelector("#text_color").value = r, this._update({ text_color: r });
-    }), t("#text_color", "input", (e) => this._update({ text_color: e.target.value })), t("#divider_color_picker", "input", (e) => {
-      const r = e.target.value;
+    }), t("#text_color", "input", (i) => this._update({ text_color: i.target.value })), t("#divider_color_picker", "input", (i) => {
+      const r = i.target.value;
       this._root.querySelector("#divider_color").value = r, this._update({ divider_color: r });
-    }), t("#divider_color", "input", (e) => this._update({ divider_color: e.target.value })), t("#css", "input", (e) => this._update({ css: e.target.value })), t("#add_entity", "click", () => {
-      const e = h(this._config.entities, []);
-      e.push({ entity_id: "" }), this._update({ entities: e });
-    }), this._root.querySelectorAll("[data-action='remove']").forEach((e) => {
-      e.addEventListener("click", () => {
-        const r = Number(e.getAttribute("data-idx")), a = h(this._config.entities, []);
+    }), t("#divider_color", "input", (i) => this._update({ divider_color: i.target.value })), t("#css", "input", (i) => this._update({ css: i.target.value })), t("#add_entity", "click", () => {
+      const i = h(this._config.entities, []);
+      i.push({ entity_id: "" }), this._update({ entities: i });
+    }), this._root.querySelectorAll("[data-action='remove']").forEach((i) => {
+      i.addEventListener("click", () => {
+        const r = Number(i.getAttribute("data-idx")), a = h(this._config.entities, []);
         a.splice(r, 1), this._update({ entities: a });
       });
-    }), h(this._config.entities, []).forEach((e, r) => {
+    }), h(this._config.entities, []).forEach((i, r) => {
       const a = (o, l) => {
         const n = this._root.querySelector(o);
         n && n.addEventListener("input", () => {
@@ -609,12 +609,12 @@ class M extends HTMLElement {
   }
   _syncPickers() {
     if (!this._root || !this._config) return;
-    const t = h(this._config.entities, []), i = this._hass;
-    t.forEach((e, r) => {
+    const t = h(this._config.entities, []), e = this._hass;
+    t.forEach((i, r) => {
       const a = this._root.querySelector(`[data-picker="entity"][data-idx="${r}"]`);
       if (a && a.childElementCount === 0 && customElements.get("ha-entity-picker")) {
         const o = document.createElement("ha-entity-picker");
-        o.className = "picker", i && (o.hass = i), o.value = e.entity_id || "", o.setAttribute("allow-custom-entity", ""), o.addEventListener("value-changed", (l) => {
+        o.className = "picker", e && (o.hass = e), o.value = i.entity_id || "", o.setAttribute("allow-custom-entity", ""), o.addEventListener("value-changed", (l) => {
           const n = l?.detail?.value ?? "", d = this._root.querySelector(`#entity_id_${r}`);
           d.value = n;
           const p = h(this._config.entities, []).slice();
@@ -622,12 +622,12 @@ class M extends HTMLElement {
         }), a.appendChild(o);
       } else if (a && a.firstElementChild) {
         const o = a.firstElementChild;
-        i && (o.hass = i), o.value = e.entity_id || "";
+        e && (o.hass = e), o.value = i.entity_id || "";
       }
       const s = this._root.querySelector(`[data-picker="icon"][data-idx="${r}"]`);
       if (s && s.childElementCount === 0 && customElements.get("ha-icon-picker")) {
         const o = document.createElement("ha-icon-picker");
-        o.className = "picker", i && (o.hass = i), o.value = e.icon || "", o.addEventListener("value-changed", (l) => {
+        o.className = "picker", e && (o.hass = e), o.value = i.icon || "", o.addEventListener("value-changed", (l) => {
           const n = l?.detail?.value ?? "", d = this._root.querySelector(`#icon_${r}`);
           d.value = n;
           const p = h(this._config.entities, []).slice();
@@ -635,7 +635,7 @@ class M extends HTMLElement {
         }), s.appendChild(o);
       } else if (s && s.firstElementChild) {
         const o = s.firstElementChild;
-        i && (o.hass = i), o.value = e.icon || "";
+        e && (o.hass = e), o.value = i.icon || "";
       }
     });
   }

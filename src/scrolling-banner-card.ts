@@ -68,14 +68,16 @@ class ScrollingBannerCard extends HTMLElement {
 
   private _needsMarquee = false;
 
-  setConfig(config: Partial<ScrollingBannerConfig>) {
-  // The HA card picker/preview may call setConfig with an empty or partial config.
-  // Never throw here—apply defaults.
-  const cfg = (config ?? {}) as Partial<ScrollingBannerConfig>;
+setConfig(config: Partial<ScrollingBannerConfig>) {
+  // HA can call setConfig with empty/partial config (especially in the card picker).
+  const cfg = (config ?? {}) as any;
+
+  // Hardening: sometimes type strings can contain whitespace.
+  const incomingType = typeof cfg.type === "string" ? cfg.type.trim() : "";
 
   this._config = {
     type: "custom:scrolling-banner-card",
-    title: cfg.title,
+    title: typeof cfg.title === "string" ? cfg.title : undefined,
 
     entities: Array.isArray(cfg.entities) ? cfg.entities : undefined,
 
@@ -90,17 +92,22 @@ class ScrollingBannerCard extends HTMLElement {
     css: safeString(cfg.css, ""),
   };
 
+  // If HA handed us a non-matching type, don't crash — just keep our own type.
+  // (This is mainly defensive; it also avoids odd picker edge cases.)
+  if (incomingType && incomingType !== "custom:scrolling-banner-card") {
+    // no-op: keep this._config.type as our canonical type
+  }
+
   this._ensureRoot();
   this._render();
 }
 
+set hass(hass: Hass) {
+  this._hass = hass;
+  this._render(false);
+}
 
-  set hass(hass: Hass) {
-    this._hass = hass;
-    this._render(false);
-  }
-
-  static async getConfigElement() {
+static async getConfigElement() {
   // Ensure the editor module is loaded/registered before creating the element.
   await import("./editor");
   return document.createElement("scrolling-banner-card-editor");
