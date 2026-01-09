@@ -100,9 +100,12 @@ class ScrollingBannerCard extends HTMLElement {
     this._render(false);
   }
 
-  static getConfigElement() {
-    return document.createElement("scrolling-banner-card-editor");
-  }
+  static async getConfigElement() {
+  // Ensure the editor module is loaded/registered before creating the element.
+  await import("./editor");
+  return document.createElement("scrolling-banner-card-editor");
+}
+
 
 static getStubConfig(): ScrollingBannerConfig {
   return {
