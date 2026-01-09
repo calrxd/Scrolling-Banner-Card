@@ -192,15 +192,15 @@ class A extends HTMLElement {
     if (!this._root || !this._config) return;
     const e = this._root.querySelector(".card"), i = this._root.querySelector(".title"), s = this._root.querySelector(".header"), u = this._root.querySelector(".track"), a = this._root.querySelector(".user-css");
     this._config.pause_on_hover ? this.classList.add("pause-on-hover") : this.classList.remove("pause-on-hover"), this._config.title && this._config.title.trim().length > 0 ? (s.style.display = "flex", i.textContent = this._config.title) : (s.style.display = "none", i.textContent = ""), e.style.setProperty("--sb-bg", this._config.background || "transparent"), e.style.setProperty("--sb-text", this._config.text_color || "rgba(255,255,255,0.92)"), e.style.setProperty("--sb-divider", this._config.divider_color || "rgba(255,255,255,0.14)"), a.textContent = this._config.css ? this._config.css : "";
-    const n = this._config.entities && this._config.entities.length > 0 ? this._config.entities : x;
-    t ? (u.innerHTML = this._renderItemsHtml(n, !1), requestAnimationFrame(() => this._recalcMarquee(n))) : (u.innerHTML = this._renderItemsHtml(n, this._needsMarquee), requestAnimationFrame(() => this._recalcMarquee(n)));
+    const o = this._config.entities && this._config.entities.length > 0 ? this._config.entities : x;
+    t ? (u.innerHTML = this._renderItemsHtml(o, !1), requestAnimationFrame(() => this._recalcMarquee(o))) : (u.innerHTML = this._renderItemsHtml(o, this._needsMarquee), requestAnimationFrame(() => this._recalcMarquee(o)));
   }
   _recalcMarquee(t) {
     if (!this._root || !this._config) return;
     const e = this._root.querySelector(".viewport"), i = this._root.querySelector(".track"), s = t || (this._config.entities && this._config.entities.length > 0 ? this._config.entities : x);
     if (!i.firstElementChild) return;
-    const u = i.getAttribute("data-duplicated") === "true", a = u ? i.scrollWidth / 2 : i.scrollWidth, n = e.clientWidth, o = a > n + 8;
-    if (this._needsMarquee = o, !o) {
+    const u = i.getAttribute("data-duplicated") === "true", a = u ? i.scrollWidth / 2 : i.scrollWidth, o = e.clientWidth, n = a > o + 8;
+    if (this._needsMarquee = n, !n) {
       u && (i.innerHTML = this._renderItemsHtml(s, !1), i.setAttribute("data-duplicated", "false")), i.classList.remove("marquee"), i.classList.add("centered"), i.style.removeProperty("--sb-shift"), i.style.removeProperty("--sb-duration");
       return;
     }
@@ -211,18 +211,18 @@ class A extends HTMLElement {
   _renderItemsHtml(t, e) {
     const i = e ? [...t, ...t] : t, s = !!this._config.divider, u = [];
     for (let a = 0; a < i.length; a++) {
-      const n = i[a], o = this._getLabel(n), { valueText: r, unitText: c } = this._getValue(n), p = this._getIcon(n), _ = y(n.bg_color) ? n.bg_color : "rgba(255,255,255,0.06)", b = y(n.text_color) ? n.text_color : "", f = y(n.icon_color) ? n.icon_color : "", T = n.entity_id.startsWith("demo.") ? "" : `data-entity="${n.entity_id}" tabindex="0" role="button"`;
+      const o = i[a], n = this._getLabel(o), { valueText: r, unitText: c } = this._getValue(o), p = this._getIcon(o), _ = y(o.bg_color) ? o.bg_color : "rgba(255,255,255,0.06)", f = y(o.text_color) ? o.text_color : "", b = y(o.icon_color) ? o.icon_color : "", T = o.entity_id.startsWith("demo.") ? "" : `data-entity="${o.entity_id}" tabindex="0" role="button"`;
       u.push(`
         <div class="pill"
           style="
             --sb-pill-bg: ${_};
-            ${b ? `--sb-pill-text:${b};` : ""}
-            ${f ? `--sb-pill-icon:${f};` : ""}
+            ${f ? `--sb-pill-text:${f};` : ""}
+            ${b ? `--sb-pill-icon:${b};` : ""}
           "
           ${T}
         >
           <span class="icon"><ha-icon icon="${p}"></ha-icon></span>
-          <span class="label">${this._escape(o)}</span>
+          <span class="label">${this._escape(n)}</span>
           <span class="value">${this._escape(r)}${c ? `<span style="opacity:.75;font-weight:700;margin-left:2px">${this._escape(c)}</span>` : ""}</span>
         </div>
       `), s && a < i.length - 1 && u.push('<div class="divider" aria-hidden="true"></div>');
@@ -422,7 +422,7 @@ class q extends HTMLElement {
   _deleteActiveEntity() {
     if (!this._config) return;
     const t = h(this._config.entities, []);
-    t.length !== 0 && (t.splice(this._activeEntityIdx, 1), this._activeEntityIdx = Math.max(0, this._activeEntityIdx - 1), this._update({ entities: t }));
+    t.length !== 0 && confirm(`Delete item ${this._activeEntityIdx + 1}?`) && (t.splice(this._activeEntityIdx, 1), this._activeEntityIdx = Math.max(0, this._activeEntityIdx - 1), this._update({ entities: t }));
   }
   _addEntityAndFocus() {
     if (!this._config) return;
@@ -461,15 +461,6 @@ class q extends HTMLElement {
 
         input[type="checkbox"] { transform: scale(1.1); }
 
-        .btn {
-          padding: 10px 12px;
-          border-radius: 12px;
-          border: 1px solid rgba(255,255,255,0.16);
-          background: rgba(0,0,0,0.10);
-          cursor: pointer;
-          user-select:none;
-        }
-
         .entity-card {
           padding: 12px;
           border-radius: 14px;
@@ -481,14 +472,6 @@ class q extends HTMLElement {
           font-weight: 700;
           font-size: 12px;
           opacity: .9;
-        }
-
-        .remove {
-          padding: 8px 10px;
-          border-radius: 10px;
-          border: 1px solid rgba(255,255,255,0.16);
-          background: rgba(255,80,80,0.14);
-          cursor:pointer;
         }
 
         .grid2 {
@@ -596,6 +579,15 @@ class q extends HTMLElement {
           border-color: rgba(255,255,255,0.30);
           background: rgba(255,255,255,0.08);
         }
+
+        .iconbtn.danger {
+          background: rgba(255,80,80,0.14);
+        }
+
+        .iconbtn:focus-visible {
+          outline: 2px solid rgba(255,255,255,0.25);
+          outline-offset: 2px;
+        }
       </style>
       <div class="wrap"></div>
     `);
@@ -607,9 +599,9 @@ class q extends HTMLElement {
       t.innerHTML = '<div class="small">Loading…</div>';
       return;
     }
-    const n = h(a.entities, []);
+    const o = h(a.entities, []);
     this._clampActiveIdx();
-    const o = n.length > 0, r = this._activeEntityIdx, c = o ? n[r] : void 0;
+    const n = o.length > 0, r = this._activeEntityIdx, c = n ? o[r] : void 0;
     if (t.innerHTML = `
       <div class="row">
         <div>
@@ -661,13 +653,13 @@ class q extends HTMLElement {
         <div class="h">Entities</div>
 
         <div class="tabs" id="entity_tabs">
-          ${n.map(
+          ${o.map(
       (p, _) => `<button class="tab ${_ === r ? "active" : ""}" data-tab="${_}" type="button">${_ + 1}</button>`
     ).join("")}
           <button class="tab add" id="add_entity_tab" type="button">+</button>
         </div>
 
-        ${o ? `
+        ${n ? `
               <div class="entity-card" data-idx="${r}">
                 <div class="entity-toolbar">
                   <div class="left">
@@ -677,9 +669,9 @@ class q extends HTMLElement {
                     <button class="iconbtn ${this._showEntityCode ? "active" : ""}" id="toggle_entity_code" type="button" title="Show/hide entity JSON">
                       &lt;/&gt;
                     </button>
-                    <button class="btn" id="copy_entity" type="button">Copy</button>
-                    <button class="btn" id="paste_entity" type="button">Paste</button>
-                    <button class="remove" id="delete_entity" type="button">Delete</button>
+                    <button class="iconbtn" id="copy_entity" type="button" title="Copy entity JSON">⧉</button>
+                    <button class="iconbtn" id="paste_entity" type="button" title="Paste/apply entity JSON">⎘</button>
+                    <button class="iconbtn danger" id="delete_entity" type="button" title="Delete this entity">🗑</button>
                   </div>
                 </div>
 
@@ -750,23 +742,23 @@ class q extends HTMLElement {
   }
   _wire() {
     if (!this._root || !this._config) return;
-    const t = (o, r, c) => {
-      const p = this._root.querySelector(o);
+    const t = (n, r, c) => {
+      const p = this._root.querySelector(n);
       p && p.addEventListener(r, c);
     };
-    t("#title", "input", (o) => this._update({ title: o.target.value })), t("#speed", "input", (o) => this._update({ speed: k(Number(o.target.value), 10, 300) })), t("#pause_on_hover", "change", (o) => this._update({ pause_on_hover: o.target.checked })), t("#divider", "change", (o) => this._update({ divider: o.target.checked })), t("#background_picker", "input", (o) => {
-      const r = o.target.value;
+    t("#title", "input", (n) => this._update({ title: n.target.value })), t("#speed", "input", (n) => this._update({ speed: k(Number(n.target.value), 10, 300) })), t("#pause_on_hover", "change", (n) => this._update({ pause_on_hover: n.target.checked })), t("#divider", "change", (n) => this._update({ divider: n.target.checked })), t("#background_picker", "input", (n) => {
+      const r = n.target.value;
       this._root.querySelector("#background").value = r, this._update({ background: r });
-    }), t("#background", "input", (o) => this._update({ background: o.target.value })), t("#text_color_picker", "input", (o) => {
-      const r = o.target.value;
+    }), t("#background", "input", (n) => this._update({ background: n.target.value })), t("#text_color_picker", "input", (n) => {
+      const r = n.target.value;
       this._root.querySelector("#text_color").value = r, this._update({ text_color: r });
-    }), t("#text_color", "input", (o) => this._update({ text_color: o.target.value })), t("#divider_color_picker", "input", (o) => {
-      const r = o.target.value;
+    }), t("#text_color", "input", (n) => this._update({ text_color: n.target.value })), t("#divider_color_picker", "input", (n) => {
+      const r = n.target.value;
       this._root.querySelector("#divider_color").value = r, this._update({ divider_color: r });
-    }), t("#divider_color", "input", (o) => this._update({ divider_color: o.target.value })), t("#css", "input", (o) => this._update({ css: o.target.value }));
+    }), t("#divider_color", "input", (n) => this._update({ divider_color: n.target.value })), t("#css", "input", (n) => this._update({ css: n.target.value }));
     const e = this._root.querySelector("#entity_tabs");
-    e && !e.__wired && (e.__wired = !0, e.addEventListener("click", (o) => {
-      const r = o.target.closest("button.tab");
+    e && !e.__wired && (e.__wired = !0, e.addEventListener("click", (n) => {
+      const r = n.target.closest("button.tab");
       if (!r) return;
       const c = r.getAttribute("data-tab");
       c !== null && this._setActiveEntityIdx(Number(c));
@@ -785,18 +777,18 @@ class q extends HTMLElement {
     }), t("#delete_entity", "click", () => this._deleteActiveEntity()), t("#entity_code", "change", () => this._applyActiveEntityCodeFromTextareaOrClipboard());
     const i = h(this._config.entities, []), s = this._activeEntityIdx;
     if (!i[s]) return;
-    const a = (o, r) => {
+    const a = (n, r) => {
       const c = i.slice();
-      c[s] = { ...c[s], [o]: r }, this._update({ entities: c });
+      c[s] = { ...c[s], [n]: r }, this._update({ entities: c });
     };
-    t(`#entity_id_${s}`, "input", (o) => a("entity_id", o.target.value)), t(`#label_${s}`, "input", (o) => a("label", o.target.value)), t(`#icon_${s}`, "input", (o) => a("icon", o.target.value)), t(`#bg_color_${s}`, "input", (o) => a("bg_color", o.target.value)), t(`#icon_color_${s}`, "input", (o) => a("icon_color", o.target.value)), t(`#text_color_${s}`, "input", (o) => a("text_color", o.target.value));
-    const n = (o, r, c) => {
-      const p = this._root.querySelector(o), _ = this._root.querySelector(r);
+    t(`#entity_id_${s}`, "input", (n) => a("entity_id", n.target.value)), t(`#label_${s}`, "input", (n) => a("label", n.target.value)), t(`#icon_${s}`, "input", (n) => a("icon", n.target.value)), t(`#bg_color_${s}`, "input", (n) => a("bg_color", n.target.value)), t(`#icon_color_${s}`, "input", (n) => a("icon_color", n.target.value)), t(`#text_color_${s}`, "input", (n) => a("text_color", n.target.value));
+    const o = (n, r, c) => {
+      const p = this._root.querySelector(n), _ = this._root.querySelector(r);
       !p || !_ || p.addEventListener("input", () => {
         _.value = p.value, a(c, p.value);
       });
     };
-    n(`#bg_color_picker_${s}`, `#bg_color_${s}`, "bg_color"), n(`#icon_color_picker_${s}`, `#icon_color_${s}`, "icon_color"), n(`#text_color_picker_${s}`, `#text_color_${s}`, "text_color");
+    o(`#bg_color_picker_${s}`, `#bg_color_${s}`, "bg_color"), o(`#icon_color_picker_${s}`, `#icon_color_${s}`, "icon_color"), o(`#text_color_picker_${s}`, `#text_color_${s}`, "text_color");
   }
   _syncPickers() {
     if (!this._root || !this._config) return;
@@ -804,29 +796,29 @@ class q extends HTMLElement {
     if (!s) return;
     const u = this._root.querySelector(`[data-picker="entity"][data-idx="${i}"]`);
     if (u && u.childElementCount === 0 && customElements.get("ha-entity-picker")) {
-      const n = document.createElement("ha-entity-picker");
-      n.className = "picker", e && (n.hass = e), n.value = s.entity_id || "", n.setAttribute("allow-custom-entity", ""), n.addEventListener("value-changed", (o) => {
-        const r = o?.detail?.value ?? "", c = this._root.querySelector(`#entity_id_${i}`);
+      const o = document.createElement("ha-entity-picker");
+      o.className = "picker", e && (o.hass = e), o.value = s.entity_id || "", o.setAttribute("allow-custom-entity", ""), o.addEventListener("value-changed", (n) => {
+        const r = n?.detail?.value ?? "", c = this._root.querySelector(`#entity_id_${i}`);
         c && (c.value = r);
         const p = h(this._config.entities, []).slice();
         p[i] = { ...p[i], entity_id: r }, this._update({ entities: p });
-      }), u.appendChild(n);
+      }), u.appendChild(o);
     } else if (u && u.firstElementChild) {
-      const n = u.firstElementChild;
-      e && (n.hass = e), n.value = s.entity_id || "";
+      const o = u.firstElementChild;
+      e && (o.hass = e), o.value = s.entity_id || "";
     }
     const a = this._root.querySelector(`[data-picker="icon"][data-idx="${i}"]`);
     if (a && a.childElementCount === 0 && customElements.get("ha-icon-picker")) {
-      const n = document.createElement("ha-icon-picker");
-      n.className = "picker", e && (n.hass = e), n.value = s.icon || "", n.addEventListener("value-changed", (o) => {
-        const r = o?.detail?.value ?? "", c = this._root.querySelector(`#icon_${i}`);
+      const o = document.createElement("ha-icon-picker");
+      o.className = "picker", e && (o.hass = e), o.value = s.icon || "", o.addEventListener("value-changed", (n) => {
+        const r = n?.detail?.value ?? "", c = this._root.querySelector(`#icon_${i}`);
         c && (c.value = r);
         const p = h(this._config.entities, []).slice();
         p[i] = { ...p[i], icon: r }, this._update({ entities: p });
-      }), a.appendChild(n);
+      }), a.appendChild(o);
     } else if (a && a.firstElementChild) {
-      const n = a.firstElementChild;
-      e && (n.hass = e), n.value = s.icon || "";
+      const o = a.firstElementChild;
+      e && (o.hass = e), o.value = s.icon || "";
     }
   }
   _update(t) {

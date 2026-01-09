@@ -235,6 +235,8 @@ class ScrollingBannerCardEditor extends HTMLElement {
     const entities = ensureArray<BannerEntity>(this._config.entities, []);
     if (entities.length === 0) return;
 
+    if (!confirm(`Delete item ${this._activeEntityIdx + 1}?`)) return;
+
     entities.splice(this._activeEntityIdx, 1);
     this._activeEntityIdx = Math.max(0, this._activeEntityIdx - 1);
     this._update({ entities });
@@ -283,15 +285,6 @@ class ScrollingBannerCardEditor extends HTMLElement {
 
         input[type="checkbox"] { transform: scale(1.1); }
 
-        .btn {
-          padding: 10px 12px;
-          border-radius: 12px;
-          border: 1px solid rgba(255,255,255,0.16);
-          background: rgba(0,0,0,0.10);
-          cursor: pointer;
-          user-select:none;
-        }
-
         .entity-card {
           padding: 12px;
           border-radius: 14px;
@@ -303,14 +296,6 @@ class ScrollingBannerCardEditor extends HTMLElement {
           font-weight: 700;
           font-size: 12px;
           opacity: .9;
-        }
-
-        .remove {
-          padding: 8px 10px;
-          border-radius: 10px;
-          border: 1px solid rgba(255,255,255,0.16);
-          background: rgba(255,80,80,0.14);
-          cursor:pointer;
         }
 
         .grid2 {
@@ -418,6 +403,15 @@ class ScrollingBannerCardEditor extends HTMLElement {
           border-color: rgba(255,255,255,0.30);
           background: rgba(255,255,255,0.08);
         }
+
+        .iconbtn.danger {
+          background: rgba(255,80,80,0.14);
+        }
+
+        .iconbtn:focus-visible {
+          outline: 2px solid rgba(255,255,255,0.25);
+          outline-offset: 2px;
+        }
       </style>
       <div class="wrap"></div>
     `;
@@ -519,9 +513,9 @@ class ScrollingBannerCardEditor extends HTMLElement {
                     <button class="iconbtn ${this._showEntityCode ? "active" : ""}" id="toggle_entity_code" type="button" title="Show/hide entity JSON">
                       &lt;/&gt;
                     </button>
-                    <button class="btn" id="copy_entity" type="button">Copy</button>
-                    <button class="btn" id="paste_entity" type="button">Paste</button>
-                    <button class="remove" id="delete_entity" type="button">Delete</button>
+                    <button class="iconbtn" id="copy_entity" type="button" title="Copy entity JSON">⧉</button>
+                    <button class="iconbtn" id="paste_entity" type="button" title="Paste/apply entity JSON">⎘</button>
+                    <button class="iconbtn danger" id="delete_entity" type="button" title="Delete this entity">🗑</button>
                   </div>
                 </div>
 
